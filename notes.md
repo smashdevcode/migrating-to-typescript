@@ -8,19 +8,11 @@
 
 
 
-Setup slides
 
+Setup simple web app
 
+Setup Node/Express backend app
 
-Setup jsconfig and tsconfig demo (i.e. project organization)
-
-Setup JSDoc (for type refinement) demo
-
-Setup d.ts (for type refinement) demo
-
-Setup other demos
-    Modules
-    ???
 
 
 

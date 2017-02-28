@@ -1,6 +1,3 @@
-// Class properties must be explicitly declared.
-// Cannot extend the prototype with first defining the new method on an interface.
-// `this` will be of type `any` when used outside of a class.
 var Calculator = (function () {
     function Calculator(operand1, operand2) {
         this.operand1 = operand1;
