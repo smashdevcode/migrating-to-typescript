@@ -1,4 +1,3 @@
-
 function getData() {
-  return $.get('/api/books');
+    return $.get('/api/books');
 }

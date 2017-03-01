@@ -29,12 +29,37 @@
 * The language service immediately adds value
  * Autocompletion
  * Browse or peek definition
+ * Find all references
  * Renaming
 
 ## Creating a JS Project
 
-* Move input files into "src" folder
-* Add jsconfig.json to configure the TS compiler
+* Move input files into a "client" folder
+* Add `jsconfig.json` to the "client" folder to configure the TS compiler
+
+```
+{
+  "compilerOptions": {
+    "target": "es5",
+    "outDir": "../public"
+  }
+}
+```
+
+And to compile your JS project, run this command:
+
+```
+tsc -p client/jsconfig.json
+```
+
+Update the `package.json` file:
+
+```
+"scripts": {
+  "prestart": "tsc -p client/jsconfig.json",
+  "start": "node server/index.js"
+}
+```
 
 ### Early Benefits
 
@@ -48,6 +73,32 @@
 
 * JSDoc comments can be used to provide type information about parameters and return types
 
+```
+class Book {
+  /**
+   * @param {string} title - The title of the book.
+   * @param {string} publisher - The publisher of the book.
+   */
+  constructor(title, publisher) {
+    this.title = title;
+    this.publisher = publisher;
+    this.ratings = [];
+  }
+
+  /**
+   * @param {string} username - The username for the rating.
+   * @param {number} rating - The rating that the user is giving the book.
+   * @param {string} comment - The comment that the user is giving the book.
+   * @returns {Rating} Returns a Rating object.
+   */
+  addRating(username, rating, comment) {
+    let ratingObj = new Rating(username, rating, comment);
+    this.ratings.push(ratingObj);
+    return ratingObj;
+  }
+}
+```
+
 ### This Looks Pretty Good... Why Migrate?
 
 * We can still make mistakes
@@ -58,6 +109,41 @@
 * Selectively converting JS files to TS
 * Ability to add optional static typings
 * Ability to define interfaces
+
+Move the contents of the "server" folder into a "server/src" folder and add a `tsconfig.json` to the "server/src" folder
+
+```
+{
+  "compilerOptions": {
+    "target": "es6",
+    "allowJs": true,
+    "outDir": "../dist"
+  }
+}
+```
+
+And to compile your JS project, run this command:
+
+```
+tsc -p server/src/tsconfig.json
+```
+
+Update the `package.json` file:
+
+```
+"scripts": {
+  "prestart": "tsc -p client/jsconfig.json && tsc -p server/src/tsconfig.json",
+  "start": "node server/index.js"
+}
+```
+
+And fix the path to the jQuery library in the server `index.js` file
+
+```
+app.get('/vendor/jquery.min.js', function(req, res) {
+  res.sendFile(path.join(__dirname, '../../node_modules', 'jquery', 'dist', 'jquery.min.js'));
+});
+```
 
 ### What to Convert First?
 
@@ -72,17 +158,42 @@
 
 * d.ts files
 
+`rating.d.ts`
+
+```
+declare class Rating {
+  username: string;
+  rating: number;
+  comment: string;
+
+  constructor(username: string, rating: number, comment: string);
+}
+
+export = Rating;
+```
+
 ## Declaration Files
 
 * Global and module "escape hatches"
 * Downloading and installing declaration files
 
+```
+{
+  "compilerOptions": {
+    "target": "es5",
+    "outDir": "../public"
+  },
+  "typeAcquisition": {
+    "include": [
+      "jquery"
+    ]
+  }
+}
+```
 
-
-
-
-
-
+```
+npm install @types/node --save-dev
+```
 
 ### Weeding Out Errors
 
